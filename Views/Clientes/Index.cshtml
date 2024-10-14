@@ -1,0 +1,88 @@
+﻿@model  IEnumerable<Cliente>
+
+@{
+    ViewData["title"] = "Clientes";
+}
+
+<div class="container ">
+
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h1>Clientes</h1>
+
+        <div>
+            <button id="cadastrarCliente" class="btn btn-success">
+                <i class="glyphicon glyphicon-file"></i>Cadastrar Cliente
+            </button>
+        </div>
+
+        @if (TempData["MensagemSucesso"] != null)
+        {
+            <div class="alert alert-success text-light" role="alert">
+                @TempData["MensagemSucesso"]
+            </div>
+        }
+
+        @if (TempData["MensagemErro"] != null)
+        {
+            <div class="alert alert-danger text-light" role="alert">
+                @TempData["MensagemErro"]
+            </div>
+        }
+    </div>
+</div>
+
+<div id="gridClientes" style="display:none;">
+   @*  <partial name="~/Views/Clientes/_GridClientes.cshtml"/> *@
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div id="modalConteudo" class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+ 
+@section scripts{
+    <script>
+        
+        this.carregaGridClientes();
+
+        //Abre a tela de cadastro
+        $("#cadastrarCliente").click(function () {
+            $.ajax({
+                type: 'GET',
+                url: '/Clientes/Cadastrar',
+                success: function (result) {
+                    $('#modalConteudo').html(result);
+                    $('#exampleModal').modal('show');
+                }
+            });
+        });
+               
+        function carregaGridClientes() {
+            $.ajax({
+                url: "/Clientes/CarregaGridClientes",
+                type: "GET",
+                datatype: "html",
+                cache: false,
+                async: true,
+                success: function (response) {
+
+                    $("#gridClientes").fadeOut('slow');
+                    $("#gridClientes").html(response);
+                    $("#gridClientes").fadeIn('slow');
+                }
+            });
+        }
+
+        
+
+    </script>
+}

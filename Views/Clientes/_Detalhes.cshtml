@@ -1,0 +1,77 @@
+﻿
+@model Cadastro_De_Clientes_Estacionamento.DTOs.ClienteDTO
+@{
+    ViewBag.Title = "Detalhes";
+}
+
+<div class="modal-body">
+    <dl class="dl-horizontal">
+        <dt>@Html.HiddenFor(model => model.cliente.Id)</dt>
+        <dt>@Html.HiddenFor(model => model.cliente.Tipo)</dt>
+
+        <div class="pessoaFisica">
+            <dt>@Html.DisplayNameFor(model => model.cliente.Nome)</dt>
+            <dd>@Html.DisplayFor(model => model.cliente.Nome)</dd>
+        </div>
+
+        <div class="pessoaJuridica">
+            <dt>@Html.DisplayNameFor(model => model.cliente.Nome_Fantasia)</dt>
+            <dd>@Html.DisplayFor(model => model.cliente.Nome_Fantasia)</dd>
+        </div>
+
+        <div class="pessoaFisica">
+
+            <dt>@Html.DisplayNameFor(model => model.cliente.CPF)</dt>
+            <dd>@Html.DisplayFor(model => model.cliente.CPF)</dd>
+        </div>
+
+        <div class="pessoaJuridica">
+            <dt>@Html.DisplayNameFor(model => model.cliente.CNPJ)</dt>
+            <dd>@Html.DisplayFor(model => model.cliente.CNPJ)</dd>
+        </div>
+
+        <dt>@Html.DisplayNameFor(model => model.cliente.Email)</dt>
+        <dd>@Html.DisplayFor(model => model.cliente.Email)</dd>
+        
+        
+    </dl>
+</div>
+
+<div id="DivPagamentos" style="display:block;">
+</div>
+ 
+<script>
+
+    $(document).ready(
+        function () {
+            let tipoCliente = $("#cliente_Tipo").val();
+            if (tipoCliente == 1) { 
+                $(".pessoaJuridica").hide();
+            }else if (tipoCliente == 2) { 
+                $(".pessoaFisica").hide();
+            }
+        }
+    )
+
+    carregaListaDePagamentos();
+        
+    function carregaListaDePagamentos() {
+
+        var id = $("#cliente_Id").val();
+
+        console.log(id);
+        $.ajax({
+        url: "/Clientes/CarregaPagamentos?id=" + id,
+        type: "GET",
+        datatype: "html",
+        cache: false,
+        async: true,
+        success: function (response) {
+
+            // $("#DivPagamentos").fadeOut('slow');
+            $("#DivPagamentos").html(response);
+            // $("#DivPagamentos").fadeIn('slow');
+        }
+    });
+}
+</script>

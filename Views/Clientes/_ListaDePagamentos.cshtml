@@ -1,0 +1,85 @@
+﻿@model Cadastro_De_Clientes_Estacionamento.DTOs.ClienteDTO
+@using System.Globalization
+
+
+<div class="container" style="border:0px solid black;">
+
+    <div class="row" style="border:0px solid black;">
+
+        @for (int mes = 1; mes <= 12; mes++)
+        {
+            string nomeMes = new CultureInfo("pt-BR").DateTimeFormat.GetMonthName(mes);
+
+            if (Model.pagamentos != null)
+            {
+                //Se encontrar o mes na lista de pagamentos mostra como pago
+                if (Model.pagamentos.FirstOrDefault(x => x.mesPagamento == mes) != null)
+                {
+                    <div class="col-12 cardPago">
+                        <div class="text-light font-weight-bold" style="border-bottom:1px solid black;">
+                            @nomeMes
+                        </div>
+                        <div></div>
+                    </div>
+                }
+                else
+                {
+                    //Se o mes não está pago e for um mês já passado, então temos um pagamento atrasado
+                    if (DateTime.UtcNow.Month >= mes)
+                    {
+                        <div class="col-12 cardNaoPago">
+                            <div>
+                                <div class="text-light font-weight-bold" style="border-bottom:1px solid black;">
+                                    @nomeMes
+                                </div>
+                                <button class="btn btn-success botaoPagamentoBoleto" mesPagto="@mes">Pagar</button>
+                            </div>
+                            <div></div>
+                        </div>
+                    }
+                    else //Se não está pago mas se tratar de um mês futuro mostra como pagamento em aberto
+                    {
+                        <div class="col-12 cardEmAberto">
+                            <div class="text-secondary font-weight-bold" style="border-bottom:1px solid black;">
+                                @nomeMes
+                            </div>
+                            <div></div>
+                        </div>
+                    }
+                }
+            }
+        }
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(
+        function () {
+            $(".botaoPagamentoBoleto").click(function () {
+                let _clienteId = $("#cliente_Id").val();
+
+                _mesPagamento = $(this).attr("mesPagto");
+
+                var pagamento = {
+                    ClienteId: _clienteId,
+                    mesPagamento: _mesPagamento
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/Clientes/PagarBoleto',
+                    data: pagamento,
+                    success: function (result) {
+
+                        carregaListaDePagamentos();
+
+                        let _resultAsString = JSON.stringify(result);
+                        let _resultAsJSON = JSON.parse(_resultAsString);
+                        alert(_resultAsJSON.mensagem);
+                    }
+                });
+            });
+        }
+    )
+</script>

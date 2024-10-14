@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Cliente>
+
+<table id="tabelaClientes" class="display table table-striped table-hover">
+
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th scope="col" style="width:40%;">Nome</th>
+            <th scope="col">CPF/CNPJ</th>
+            <th scope="col">Telefone</th>
+            <th style="text-align: center;"></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model != null)
+        {
+            @foreach (var cliente in Model)
+            {
+                <tr>
+                    <td>
+                        @if (cliente.Tipo == 1)
+                        {
+                            <p>P.Física</p>
+                        }
+                        @if (cliente.Tipo == 2)
+                        {
+                            <p>P.Jurídica</p>
+                        }
+                    </td>
+                    <td>
+                        @if (cliente.Tipo == 1)
+                        {
+                            @cliente.Nome
+                        }
+                        @if (cliente.Tipo == 2)
+                        {
+                            @cliente.Nome_Fantasia
+                        }
+                    </td>
+                    <td>
+                        @if (cliente.Tipo == 1)
+                        {
+                            @cliente.CPF
+                        }
+                        @if (cliente.Tipo == 2)
+                        {
+                            @cliente.CNPJ
+                        }
+                    </td>
+                    <td>@cliente.Celular</td>
+                    <td style="text-align: center;">
+                        <button class="btn btn-success detalhes" data-id="@cliente.Id"><i class="glyphicon glyphicon-file"></i>Detalhes</button>
+                    </td>
+
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(
+        function () {
+            $(".detalhes").click(function () {
+                var id = $(this).attr("data-id");
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/Clientes/Detalhes?id=' + id,
+                    success: function (result) {
+                        $('#modalConteudo').html(result);
+                        $('#exampleModal').modal('show');
+                    }
+                });
+            });
+        }            
+    )
+</script>
