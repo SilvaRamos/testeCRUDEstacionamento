@@ -14,27 +14,18 @@
                 <i class="glyphicon glyphicon-file"></i>Cadastrar Cliente
             </button>
         </div>
-
-        @if (TempData["MensagemSucesso"] != null)
-        {
-            <div class="alert alert-success text-light" role="alert">
-                @TempData["MensagemSucesso"]
-            </div>
-        }
-
-        @if (TempData["MensagemErro"] != null)
-        {
-            <div class="alert alert-danger text-light" role="alert">
-                @TempData["MensagemErro"]
-            </div>
-        }
     </div>
 </div>
 
-<div id="gridClientes" style="display:none;">
-   @*  <partial name="~/Views/Clientes/_GridClientes.cshtml"/> *@
+<div id="divCarregando" style="display: flex; justify-content: center;">
+    <button class="btn btn-primary" type="button" disabled>
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span class="sr-only">Carregando Clientes...</span>
+    </button>
 </div>
 
+<div id="gridClientes" style="display:none;">
+</div>
 
 <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -74,6 +65,8 @@
                 cache: false,
                 async: true,
                 success: function (response) {
+
+                    $("#divCarregando").fadeOut('slow');
 
                     $("#gridClientes").fadeOut('slow');
                     $("#gridClientes").html(response);
